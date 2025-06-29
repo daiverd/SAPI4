@@ -1,0 +1,2 @@
+sapi4_headers/*.h text eol=crlf
+sapi4_headers/*.rc text eol=crlf
