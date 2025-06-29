@@ -16,6 +16,15 @@ app = Flask(__name__)
 # Global dictionary to store voice information
 VOICES = {}
 
+def get_executable_path(exe_name):
+    """Get the correct path to bundled executables"""
+    if hasattr(sys, '_MEIPASS'):
+        # Running as PyInstaller bundle
+        return os.path.join(sys._MEIPASS, exe_name)
+    else:
+        # Running as regular Python script
+        return exe_name
+
 class Voice(object):
     """Voice configuration class"""
     def __init__(self, name):
@@ -29,7 +38,8 @@ class Voice(object):
         
         # Get voice limits from sapi4limits.exe
         try:
-            proc = subprocess.Popen(['sapi4limits.exe', name], 
+            sapi4limits_path = get_executable_path('sapi4limits.exe')
+            proc = subprocess.Popen([sapi4limits_path, name], 
                                     stdout=subprocess.PIPE, 
                                     stderr=subprocess.PIPE)
             stdout, stderr = proc.communicate()
@@ -66,7 +76,8 @@ def initialize_voices():
     """Initialize available voices by calling sapi4limits.exe"""
     global VOICES
     try:
-        proc = subprocess.Popen(['sapi4limits.exe'], 
+        sapi4limits_path = get_executable_path('sapi4limits.exe')
+        proc = subprocess.Popen([sapi4limits_path], 
                                 stdout=subprocess.PIPE, 
                                 stderr=subprocess.PIPE)
         stdout, stderr = proc.communicate()
@@ -178,7 +189,8 @@ def generate_tts():
         
         # Execute sapi4out.exe with timeout
         try:
-            proc = subprocess.Popen(['sapi4out.exe', voice_name, str(pitch), str(speed), text],
+            sapi4out_path = get_executable_path('sapi4out.exe')
+            proc = subprocess.Popen([sapi4out_path, voice_name, str(pitch), str(speed), text],
                                     stdout=subprocess.PIPE,
                                     stderr=subprocess.PIPE)
             
