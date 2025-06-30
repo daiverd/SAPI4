@@ -20,9 +20,13 @@ def get_executable_path(exe_name):
     """Get the correct path to bundled executables"""
     if hasattr(sys, '_MEIPASS'):
         # Running as PyInstaller bundle
-        return os.path.join(sys._MEIPASS, exe_name)
+        bundled_path = os.path.join(sys._MEIPASS, exe_name)
+        print("PyInstaller bundle detected. Looking for %s at: %s" % (exe_name, bundled_path))
+        print("Bundle directory contents: %s" % os.listdir(sys._MEIPASS))
+        return bundled_path
     else:
         # Running as regular Python script
+        print("Running as script. Looking for %s in current directory" % exe_name)
         return exe_name
 
 class Voice(object):
