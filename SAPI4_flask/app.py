@@ -194,13 +194,19 @@ def generate_tts():
         # Execute sapi4out.exe with timeout
         try:
             sapi4out_path = get_executable_path('sapi4out.exe')
-            # Set working directory to a writable temp directory
-            import tempfile
-            temp_dir = tempfile.gettempdir()
+            # Set working directory to where the main executable is running from
+            if hasattr(sys, '_MEIPASS'):
+                # PyInstaller bundle - use the directory where the .exe was launched from
+                exe_dir = os.path.dirname(sys.executable)
+            else:
+                # Regular script - use current directory
+                exe_dir = os.getcwd()
+            
+            print("Setting working directory for sapi4out.exe to: %s" % exe_dir)
             proc = subprocess.Popen([sapi4out_path, voice_name, str(pitch), str(speed), text],
                                     stdout=subprocess.PIPE,
                                     stderr=subprocess.PIPE,
-                                    cwd=temp_dir)
+                                    cwd=exe_dir)
             
             # Wait with timeout (10 seconds)
             start_time = time.time()
