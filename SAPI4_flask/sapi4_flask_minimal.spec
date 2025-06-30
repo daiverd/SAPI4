@@ -14,17 +14,19 @@ spec_dir = os.path.dirname(os.path.abspath(SPEC))
 datas = [
     (os.path.join(spec_dir, 'templates'), 'templates'),
     (os.path.join(spec_dir, 'static'), 'static'),
+    # Include SAPI4 files as data files (since binaries didn't work)
+    ('sapi4out.exe', '.'),
+    ('sapi4limits.exe', '.'),
+    ('sapi4.dll', '.'),
 ]
 
-# Define binaries to include (SAPI4 executables and DLL)
+# Define binaries to include (empty - using datas instead)
 binaries = []
-sapi4_files = ['sapi4out.exe', 'sapi4limits.exe', 'sapi4.dll']
-for filename in sapi4_files:
-    filepath = os.path.join(spec_dir, filename)
-    if os.path.exists(filepath):
-        binaries.append((filepath, '.'))
-    else:
-        print("Warning: {} not found in {}".format(filename, spec_dir))
+
+# Verify files exist
+for src, dst in binaries:
+    if not os.path.exists(src):
+        print("ERROR: {} not found in current directory".format(src))
 
 # Absolutely minimal hidden imports - only core essentials
 hiddenimports = [
