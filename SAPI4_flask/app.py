@@ -225,6 +225,10 @@ def generate_tts():
             # Get output file path
             output_file = stdout.replace("err:xrandr:xrandr12_init_modes Failed to get primary CRTC info.", "").strip()
             
+            # If the output file path is relative, make it absolute relative to the exe_dir
+            if not os.path.isabs(output_file):
+                output_file = os.path.join(exe_dir, output_file)
+            
             if not output_file or not os.path.exists(output_file):
                 abort(500, "Audio generation failed")
             
