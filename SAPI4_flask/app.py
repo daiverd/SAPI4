@@ -194,9 +194,13 @@ def generate_tts():
         # Execute sapi4out.exe with timeout
         try:
             sapi4out_path = get_executable_path('sapi4out.exe')
+            # Set working directory to a writable temp directory
+            import tempfile
+            temp_dir = tempfile.gettempdir()
             proc = subprocess.Popen([sapi4out_path, voice_name, str(pitch), str(speed), text],
                                     stdout=subprocess.PIPE,
-                                    stderr=subprocess.PIPE)
+                                    stderr=subprocess.PIPE,
+                                    cwd=temp_dir)
             
             # Wait with timeout (10 seconds)
             start_time = time.time()
